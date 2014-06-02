@@ -56,10 +56,28 @@ GameManager.prototype.addStartTiles = function () {
   }
 };
 
-// Adds a tile in a random position
+//rishil Adds a tile in a random position
 GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
-    var value = Math.random() < 0.5 ? 2 : 3;
+    var value = new String();
+    var randy = Math.random();
+      if (randy < .166)
+        value = 'NaOH'
+      if ((randy > .166) && (randy < .333))
+        value = 'NH4'
+      if ((randy > .333) && (randy < .5))
+        value = 'BaOH2'
+      if ((randy > .5) && (randy < .6))
+        value = 'HCl'
+      if ((randy > .6) && (randy < .7))
+        value = 'HNO3'
+      if ((randy > .7) && (randy < .8))
+        value = 'HF'
+      if ((randy > .8) && (randy < .9))
+        value = 'H3COOH'
+      if ((randy > .9) && (randy < 1))
+        value = 'HClO4'
+    
     var tile = new Tile(this.grid.randomAvailableCell(), value);
 
     tile.unstable = 0;
@@ -131,14 +149,34 @@ GameManager.prototype.move = function (direction) {
 
         // Only one merger per row traversal?
         //if (!tile.isDud) {
-          if (next && next.value === tile.value && !next.mergedFrom) {
+          //rishil this is where I check to see if a merger will happen
+          if (next && (
+                      ((next.value === "HCl" ||
+                        next.value === "HF" ||
+                        next.value === "HNO3" ||
+                        next.value === "HClO4" ||
+                        next.value === "H3COOH" )
+                      && (tile.value === "NH3" ||
+                          tile.value === "NaOH" ||
+                          tile.value === "BaOH2" ))
+                      || 
+                      ((next.value === "NH3" ||
+                        next.value === "BaOH2" ||
+                        next.value === "NaOH" ||)
+                      && (tile.value === "HCl" ||
+                          tile.value === "HNO3" ||
+                          tile.value === "HF" ||
+                          tile.value === "HClO4" ||
+                          tile.value === "H3COOH")
+                          
+                        
+
+
+            next.value === tile.value && !next.mergedFrom) {
               var merged = new Tile(positions.next, tile.value * 2);
               merged.mergedFrom = [tile, next];
 
-              merged.unstable = merged.value === 8
-                             || merged.value === 32
-                             || merged.value === 128
-                             || merged.value > 256 ? (merged.value <= 256 ? merged.value - (merged.value / 4) : 81) : 0;
+              
 
               // Update the score
               self.score += merged.value + (tile.unstable > 0 ? tile.unstable * 2 : 0) + (next.unstable > 0 ? next.unstable * 2 : 0);
@@ -266,9 +304,21 @@ GameManager.prototype.tileMatchesAvailable = function () {
           var cell   = { x: x + vector.x, y: y + vector.y };
 
           var other  = self.grid.cellContent(cell);
-
-          if (other && other.value === tile.value) {
+//rishil this is where I say "add them like normal only if its not a acid/base tile"
+          if (other && other.value != 'NaOH' &&
+                       other.value != 'HCl' &&
+                       other.value != 'HCl' &&
+                       other.value != 'H3COOH' &&
+                       other.value != 'BaOH2' &&
+                       other.value != 'HClO4' &&
+                       other.value != 'HCl' &&
+                       other.value != 'HNO3' &&
+                       other.value != 'NH4' &&
+                       other.value != 'HF')
+            { if (other.value === tile.value) {
             return true; // These two tiles can be merged
+            }
+            else if
           }
         }
       }
